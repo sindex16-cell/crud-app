@@ -21,6 +21,11 @@
 </form>
 <script>
   const form = document.getElementById("form");
+  try {
+    if (sessionStorage.getItem("draft")) {
+      document.getElementById("error").textContent = "Your session ended. Log in again to get your text back.";
+    }
+  } catch (_) { /* storage is not available */ }
   let mode = "login";
   form.querySelectorAll("button").forEach(b => b.addEventListener("click", () => mode = b.dataset.mode));
   form.addEventListener("submit", async e => {

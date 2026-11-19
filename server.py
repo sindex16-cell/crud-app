@@ -70,6 +70,7 @@ class Handler(BaseHTTPRequestHandler):
         self.send_header("Content-Type", "application/json")
         self.send_header("Content-Length", str(len(body)))
         self.send_header("Cache-Control", "no-store")
+        self.hsts()
         for k, v in (extra or []):
             self.send_header(k, v)
         self.end_headers()
@@ -101,8 +102,17 @@ class Handler(BaseHTTPRequestHandler):
             "SELECT u.id, u.username FROM sessions s JOIN users u ON u.id=s.user_id "
             "WHERE s.token=? AND s.expires>?", (token_hash(c["session"].value), int(time.time()))).fetchone()
 
+    def is_https(self):
+        # The server listens on 127.0.0.1 only, so only nginx can set this header.
+        return self.headers.get("X-Forwarded-Proto") == "https" or os.environ.get("CRUD_SECURE_COOKIE") == "1"
+
     def session_cookie(self, token, age):
-        return [("Set-Cookie", f"session={token}; Path=/; HttpOnly; SameSite=Lax; Max-Age={age}")]
+        secure = "; Secure" if self.is_https() else ""
+        return [("Set-Cookie", f"session={token}; Path=/; HttpOnly; SameSite=Lax; Max-Age={age}{secure}")]
+
+    def hsts(self):
+        if self.is_https():
+            self.send_header("Strict-Transport-Security", "max-age=31536000")
 
     # ---- routing ----
     def do_GET(self):
@@ -133,6 +143,7 @@ class Handler(BaseHTTPRequestHandler):
         self.send_header("Content-Type", TYPES[ext])
         self.send_header("Content-Length", str(len(body)))
         self.send_header("X-Content-Type-Options", "nosniff")
+        self.hsts()
         self.end_headers()
         self.wfile.write(body)
 
