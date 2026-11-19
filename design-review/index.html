@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HSK 1 Notes Design Review</title>
+<style>
+  :root { --bg:#f2f4f7; --card:#fff; --text:#1e293b; --muted:#475569; --line:#e2e8f0; --bad:#b91c1c; --good:#15803d; --blue:#1d4ed8; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#0f172a; --card:#1e293b; --text:#e2e8f0; --muted:#94a3b8; --line:#334155; --bad:#f87171; --good:#4ade80; --blue:#93c5fd; } }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--text); font:16px/1.55 system-ui,sans-serif; }
+  main { max-width:1000px; margin:0 auto; padding:24px 16px 64px; }
+  h1 { margin:0 0 4px; } h2 { margin:40px 0 12px; } h3 { margin:0 0 6px; }
+  .sub { color:var(--muted); margin:0 0 24px; }
+  .card { background:var(--card); border-radius:10px; padding:16px; margin:16px 0; box-shadow:0 1px 4px #0002; }
+  .videos { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  video, img { width:100%; border-radius:6px; border:1px solid var(--line); display:block; background:#000; }
+  .tag { display:inline-block; font-weight:700; font-size:.8rem; padding:2px 8px; border-radius:99px; color:#fff; }
+  .tag.b { background:var(--bad); } .tag.a { background:var(--good); }
+  .pair { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:12px; }
+  .pair figure { margin:0; } figcaption { margin:6px 0 0; font-size:.9rem; color:var(--muted); }
+  .num { color:var(--blue); }
+  table { width:100%; border-collapse:collapse; } td, th { text-align:left; padding:8px; border-top:1px solid var(--line); vertical-align:top; }
+  @media (max-width:700px) { .videos, .pair { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+<main>
+  <h1>HSK 1 Notes: Design Review</h1>
+  <p class="sub">Date: 2026-11-19. Scope: the login page and the main page. Tests ran on a copy of the app with a new database.</p>
+
+  <div class="card">
+    <h3>Summary</h3>
+    <p>The review found 5 main problems and 6 smaller problems. All of them are fixed in the code. The two videos below show each problem before the fix and the same step after the fix. The red box is a problem. The green box is a fix.</p>
+  </div>
+
+  <h2>Videos</h2>
+  <div class="videos">
+    <div class="card"><span class="tag b">BEFORE</span> <strong>The 6 problems</strong>
+      <video controls preload="metadata" src="before.mp4"></video></div>
+    <div class="card"><span class="tag a">AFTER</span> <strong>The same steps with the fixes</strong>
+      <video controls preload="metadata" src="after.mp4"></video></div>
+  </div>
+
+  <h2>Main fixes</h2>
+
+  <div class="card">
+    <h3><span class="num">1.</span> The detail panel opens far from the grid</h3>
+    <p><b>Problem:</b> The panel was below all 149 tiles. After a click, the page scrolled down and the grid was out of view.<br>
+       <b>Fix:</b> On a desktop screen, the panel is on the right side and stays in view. On a phone, it is a sheet at the bottom of the screen with a close button. The Escape key also closes it.</p>
+    <div class="pair">
+      <figure><img src="img/before-desktop.png" alt="Before: the grid is out of view"><figcaption><span class="tag b">BEFORE</span> The grid is out of view.</figcaption></figure>
+      <figure><img src="img/after-desktop.png" alt="After: the panel is next to the grid"><figcaption><span class="tag a">AFTER</span> The panel is next to the grid.</figcaption></figure>
+    </div>
+    <div class="pair">
+      <figure><img src="img/before-mobile.png" alt="Before: phone"><figcaption><span class="tag b">BEFORE</span> Phone: the detail is at the end of a very long page.</figcaption></figure>
+      <figure><img src="img/after-mobile.png" alt="After: phone"><figcaption><span class="tag a">AFTER</span> Phone: the detail is a bottom sheet.</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">2.</span> The open tile has no highlight</h3>
+    <p><b>Problem:</b> A green border meant "you wrote a description". Nothing showed which tile was open. The page did not explain the green border.<br>
+       <b>Fix:</b> The open tile has a blue border and a blue background. A green check mark shows your descriptions. A small number shows the count of all descriptions. A line above the grid explains both marks.</p>
+    <div class="pair">
+      <figure><img src="img/before-desktop-top.png" alt="Before: tiles"><figcaption><span class="tag b">BEFORE</span> A green border with no legend.</figcaption></figure>
+      <figure><img src="img/after-desktop-top.png" alt="After: tiles"><figcaption><span class="tag a">AFTER</span> Open tile, check mark, count, and legend.</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">3.</span> Save gives no feedback</h3>
+    <p><b>Problem:</b> After you clicked Save, nothing told you that the save worked.<br>
+       <b>Fix:</b> The message "Saved." shows in green for 3 seconds. Errors show in red. The page now shows only the descriptions of other users in the list. Your own description is in the field only.</p>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">4.</span> Delete is as strong as Save and has no warning</h3>
+    <p><b>Problem:</b> Delete had the same size as Save. One click removed the description.<br>
+       <b>Fix:</b> Delete is a small red text button. The first click changes it to a red "Confirm delete?" button. The second click deletes. If you do nothing, the button goes back after 4 seconds.</p>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">5.</span> The tiles cannot be used with the keyboard</h3>
+    <p><b>Problem:</b> Each tile was a <code>div</code>. The Tab key skipped all tiles. A screen reader did not announce them.<br>
+       <b>Fix:</b> Each tile is now a <code>button</code> with a clear label, for example "杯子, bēizi, cup. 1 descriptions. You wrote one." All buttons and tiles show a blue focus outline.</p>
+  </div>
+
+  <h2>Smaller fixes</h2>
+  <div class="card">
+    <table>
+      <tr><th>Area</th><th>Problem</th><th>Fix</th></tr>
+      <tr><td>Tiles</td><td>Long pinyin wrapped. Row heights were not equal.</td><td>The pinyin stays on one line. The count is a small badge.</td></tr>
+      <tr><td>Login</td><td>The password placeholder was cut off.</td><td>The placeholder is "Password". The rules are in a hint below the fields.</td></tr>
+      <tr><td>Search</td><td>A search with no result left a blank grid.</td><td>The page shows "No words found."</td></tr>
+      <tr><td>Contrast</td><td>The green "(you)" text was about 3.3:1.</td><td>The page uses darker colors (#15803d, #475569). The contrast is above 4.5:1.</td></tr>
+      <tr><td>Labels</td><td>The fields had only placeholders.</td><td>Each field has a label. The search field has a hidden label for screen readers.</td></tr>
+      <tr><td>Chinese text</td><td>No Chinese font and no language tag.</td><td>The font list has Noto Sans SC, PingFang SC, and Microsoft YaHei. The Chinese text has <code>lang="zh"</code>.</td></tr>
+    </table>
+    <div class="pair">
+      <figure><img src="img/before-login.png" alt="Before: login"><figcaption><span class="tag b">BEFORE</span> Login page.</figcaption></figure>
+      <figure><img src="img/after-login.png" alt="After: login"><figcaption><span class="tag a">AFTER</span> Login page with labels and hint.</figcaption></figure>
+    </div>
+  </div>
+
+  <h2>Not done</h2>
+  <div class="card">
+    <ul>
+      <li>Times on the descriptions.</li>
+      <li>Filters such as "My words" and "No descriptions yet".</li>
+      <li>Dark mode for the app.</li>
+      <li>HTTPS. The site still uses HTTP.</li>
+    </ul>
+  </div>
+</main>
+</body>
+</html>

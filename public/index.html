@@ -9,11 +9,14 @@
 <body class="center">
 <form id="form" class="card">
   <h2>HSK 1 Notes</h2>
+  <label for="user">Username</label>
   <input id="user" placeholder="Username" autocomplete="username" required>
-  <input id="pass" type="password" placeholder="Password (8 or more characters)" autocomplete="current-password" required>
+  <label for="pass">Password</label>
+  <input id="pass" type="password" placeholder="Password" autocomplete="current-password" required>
+  <div class="hint">New account: 3 to 20 letters, digits or underscore. Password: 8 or more characters.</div>
   <button type="submit" data-mode="login">Log in</button>
   <button type="submit" data-mode="register" class="secondary">Create account</button>
-  <div id="error" class="error"></div>
+  <div id="error" class="error" role="alert"></div>
 </form>
 <script>
   const form = document.getElementById("form");
