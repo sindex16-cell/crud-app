@@ -1,0 +1,12 @@
+[Unit]
+Description=HSK 1 notes app
+After=network.target
+
+[Service]
+User=dev
+WorkingDirectory=/home/dev/start/crud-app
+ExecStart=/usr/bin/python3 /home/dev/start/crud-app/server.py
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

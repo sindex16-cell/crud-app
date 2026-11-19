@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HSK 1 Notes - Login</title>
+<link rel="stylesheet" href="/style.css">
+</head>
+<body class="center">
+<form id="form" class="card">
+  <h2>HSK 1 Notes</h2>
+  <input id="user" placeholder="Username" autocomplete="username" required>
+  <input id="pass" type="password" placeholder="Password (8 or more characters)" autocomplete="current-password" required>
+  <button type="submit" data-mode="login">Log in</button>
+  <button type="submit" data-mode="register" class="secondary">Create account</button>
+  <div id="error" class="error"></div>
+</form>
+<script>
+  const form = document.getElementById("form");
+  let mode = "login";
+  form.querySelectorAll("button").forEach(b => b.addEventListener("click", () => mode = b.dataset.mode));
+  form.addEventListener("submit", async e => {
+    e.preventDefault();
+    const err = document.getElementById("error");
+    try {
+      const res = await fetch("/api/" + mode, {
+        method: "POST", headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({username: user.value, password: pass.value})
+      });
+      if (res.ok) { location.href = "/app.html"; return; }
+      let msg = "Server error. Try again.";
+      try { msg = (await res.json()).error || msg; } catch (_) {}
+      err.textContent = msg;
+    } catch (_) {
+      err.textContent = "Cannot reach the server.";
+    }
+  });
+</script>
+</body>
+</html>
